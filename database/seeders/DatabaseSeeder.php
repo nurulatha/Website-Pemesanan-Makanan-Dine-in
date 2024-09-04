@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
-        DB::table('role_user')->truncate();
+        DB::table('role_users')->truncate();
         Role::truncate();
         User::truncate();
         Category::truncate();
@@ -57,7 +57,7 @@ class DatabaseSeeder extends Seeder
                 'password' => $userPass[$index]
             ]);
 
-            DB::table('role_user')->insert([
+            DB::table('role_users')->insert([
                 'role_id' => $roleIds[$index],
                 'user_id' => $user->id
             ]);
