@@ -11,10 +11,6 @@ use Illuminate\Support\Str;
 
 class MenuController extends Controller
 {
-    // public function __construct()
-    // {
-    //     $this->middleware(['auth:sanctum', 'is_admin'])->only(['store', 'update', 'destroy']);
-    // }
 
     public function index()
     {
@@ -23,14 +19,6 @@ class MenuController extends Controller
             MenuResource::collection($menus->loadMissing('category'))
         );
         // return MenuResource::collection($menus->loadMissing('category'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     public function store(Request $request)
@@ -56,18 +44,7 @@ class MenuController extends Controller
         return new MenuResource($menu->loadMissing('category:id,name'));
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Menu $menu)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Menu $menu)
     {
         //
     }

@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->string('url', 255);
-            $table->string('status', 255);
+            $table->foreignId('order_id')->constrained('orders');
+            $table->string('checkout_url');
+            $table->string('external_id');
+            $table->string('status');
             $table->timestamps();
         });
     }

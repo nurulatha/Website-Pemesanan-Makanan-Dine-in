@@ -1,24 +1,63 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\TableController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
+Route::middleware('auth:sanctum')->group(function () {
 
-Route::resource('/menus', MenuController::class);
-Route::resource('/categories', CategoryController::class);
-Route::resource('/orders', OrderController::class);
-Route::resource('/tables', TableController::class);
-Route::resource('/carts', CartController::class);
+    // Logout
+    Route::get('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+    Route::get('me', [AuthController::class, 'me'])->middleware('auth:sanctum');
 
-Route::post('/login', [AuthController::class, 'login']);
-Route::get('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
-Route::get('me', [AuthController::class, 'me'])->middleware('auth:sanctum');
+    Route::middleware('is_admin')->group(function () {
+
+        // Tables
+        Route::post('/tables', [TableController::class, 'store']);
+        Route::put('/tables/{table}', [TableController::class, 'update']);
+        Route::delete('/tables/{table}', [TableController::class, 'destroy']);
+
+        // Menus
+        Route::post('/menus', [MenuController::class, 'store']);
+        Route::put('/menus/{menu}', [MenuController::class, 'update']);
+        Route::delete('/menus/{menu}', [MenuController::class, 'destroy']);
+
+        // Categories
+        Route::post('/categories', [CategoryController::class, 'store']);
+        Route::put('/categories/{category}', [CategoryController::class, 'update']);
+        Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
+    });
+});
+
+// Tables
+Route::get('/tables', [TableController::class, 'index']);
+
+// Menus
+Route::get('/menus', [MenuController::class, 'index']);
+
+// Categories
+Route::get('/categories', [CategoryController::class, 'index']);
+
+Route::middleware('guest')->group(function () {
+
+    // Login
+    Route::post('/login', [AuthController::class, 'login']);
+
+    // Tables
+    Route::get('/tables/{table:url}', [TableController::class, 'show']);
+
+    // Orders
+    Route::get('/orders', [OrderController::class, 'index']);
+    Route::post('/orders', [OrderController::class, 'store']);
+    Route::get('/orders/{order}', [OrderController::class, 'show']);
+    Route::put('/orders/{order}', [OrderController::class, 'update']);
+    Route::delete('/orders/{order}', [OrderController::class, 'destroy']);
+
+    // Transaction
+    Route::post('/transactions', [TransactionController::class, 'store']);
+    Route::post('/notification', [TransactionController::class, 'notificationCallback']);
+});

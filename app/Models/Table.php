@@ -13,6 +13,6 @@ class Table extends Model
 
     public function status()
     {
-        return $this->belongsTo(Status::class, 'status_id', 'id');
+        return $this->belongsTo(TableStatus::class, 'table_status_id', 'id');
     }
 }

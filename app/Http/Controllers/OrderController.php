@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\OrderResource;
-use App\Models\Cart;
 use App\Models\Menu;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -19,26 +18,20 @@ class OrderController extends Controller
         return OrderResource::collection($orders);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'table_id' => 'required',
+            'url' => 'required|exists:tables,url',
             'customer_name' => 'required|max:255',
             'menu_items' => 'required|array',
             'menu_items.*.menu_id' => 'required|exists:menus,id',
             'menu_items.*.quantity' => 'required|integer|min:1'
         ]);
 
+        $tableId = Table::where('url', $validated['url'])->first()->id;
+
         $order = Order::create([
-            'table_id' => $validated['table_id'],
+            'table_id' => $tableId,
             'customer_name' => $validated['customer_name']
         ]);
 
@@ -56,11 +49,9 @@ class OrderController extends Controller
 
         Table::where('id', $order->table_id)
             ->update([
-                'status_id' => 3
+                'table_status_id' => 3
             ]);
 
-        Cart::where('table_id', $order->table_id)
-            ->delete();
 
         return new OrderResource($order->loadMissing('orderItems'));
     }
@@ -71,13 +62,6 @@ class OrderController extends Controller
         return new OrderResource($order);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
 
     public function update(Request $request, Order $order)
     {

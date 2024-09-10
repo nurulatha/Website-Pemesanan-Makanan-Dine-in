@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Status extends Model
+class TableStatus extends Model
 {
     use HasFactory;
 
@@ -13,6 +13,6 @@ class Status extends Model
 
     public function tables()
     {
-        return $this->hasMany(Table::class, 'status_id', 'id');
+        return $this->hasMany(Table::class, 'table_status_id', 'id');
     }
 }

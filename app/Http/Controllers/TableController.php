@@ -8,25 +8,11 @@ use Illuminate\Routing\Controller;
 
 class TableController extends Controller
 {
-    public function __construct()
-    {
-        return $this->middleware(['auth:sanctum', 'is_admin'])->only(['store', 'update', 'destroy']);
-    }
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
         $tables = Table::all();
         return response()->json(['data' => $tables]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     public function store(Request $request)
@@ -42,25 +28,16 @@ class TableController extends Controller
         return response()->json(['data' => $table]);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Table $table)
     {
-        //
+        if (!$table) {
+            return response()->json(['message' => 'table not found'], 404);
+        }
+
+        return response()->json($table);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Table $table)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Table $table)
     {
         $validated = $request->validate([
@@ -73,9 +50,6 @@ class TableController extends Controller
         return response()->json(['data' => $table]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Table $table)
     {
         $table->delete();

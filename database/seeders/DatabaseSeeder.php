@@ -2,13 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Models\Cart;
 use App\Models\Category;
 use App\Models\Menu;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Role;
-use App\Models\Status;
+use App\Models\TableStatus;
 use App\Models\Table;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -29,11 +28,10 @@ class DatabaseSeeder extends Seeder
         User::truncate();
         Category::truncate();
         Menu::truncate();
-        Status::truncate();
+        TableStatus::truncate();
         Table::truncate();
         Order::truncate();
         OrderItem::truncate();
-        Cart::truncate();
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
@@ -73,20 +71,19 @@ class DatabaseSeeder extends Seeder
 
         Menu::factory(30)->create();
 
-        $statuses = ['Kosong', 'Terisi', 'Sedang Dipesan'];
+        $tableStatuses = ['Kosong', 'Terisi', 'Sedang Dipesan'];
 
-        foreach ($statuses as $status) {
-            Status::create([
-                'name' => $status,
+        foreach ($tableStatuses as $tableStatus) {
+            TableStatus::create([
+                'name' => $tableStatus,
             ]);
         }
 
-        $urls = ['meja-satu', 'meja-dua', 'meja-tiga'];
 
-        foreach ($urls as $url) {
+        for ($i = 0; $i < 3; $i++) {
             Table::create([
-                'url' => $url,
-                'status_id' => 1
+                'url' => uniqid(),
+                'table_status_id' => 1
             ]);
         }
     }
