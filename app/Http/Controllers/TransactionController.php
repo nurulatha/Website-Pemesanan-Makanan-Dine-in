@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Table;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -27,6 +28,8 @@ class TransactionController extends Controller
         $order = Order::findOrFail($request->order_id);
         $amount = OrderItem::where('order_id', $order->id)->sum('total_price');
 
+        $tableUrl = Table::findOrFail($order->table_id)->url;
+
         $uuid = (string) Str::uuid();
 
         $apiInstance = new InvoiceApi();
@@ -39,24 +42,49 @@ class TransactionController extends Controller
             "customer" => [
                 "given_names" => $order->customer_name,
             ],
-            "success_redirect_url" => env('NGROK_URL'),
-            "failure_redirect_url" => env('NGROK_URL'),
+            "success_redirect_url" => env('FRONTEND_URL') . 'orders/' . $tableUrl,
+            "failure_redirect_url" => env('FRONTEND_URL') . 'orders/' . $tableUrl
         ]);
 
         try {
             $result = $apiInstance->createInvoice($createInvoiceRequest);
 
-            $transaction = new Transaction();
-            $transaction->order_id = $order->id;
-            $transaction->checkout_url = $result['invoice_url'];
-            $transaction->external_id = $uuid;
-            $transaction->status = 'pending';
-            $transaction->save();
+            Transaction::updateOrCreate(
+                [
+                    'order_id' => $order->id,
+                    'status' => $result['status']
+                ],
+                [
+                    'checkout_url' => $result['invoice_url'],
+                    'external_id' => $uuid
+                ]
+            );
+
+            // $transaction = new Transaction();
+            // $transaction->order_id = $order->id;
+            // $transaction->checkout_url = $result['invoice_url'];
+            // $transaction->external_id = $uuid;
+            // $transaction->status = $result['status'];
+            // $transaction->save();
 
             return response()->json(['data' => $result['invoice_url']]);
         } catch (\Xendit\XenditSdkException $e) {
             return response()->json(['message' => $e->getMessage()]);
         }
+    }
+
+    public function show($id)
+    {
+        $transaction = Transaction::findOrFail($id);
+        return response()->json(['data' => $transaction]);
+    }
+
+    public function paidStatus($orderId)
+    {
+        $transaction = Transaction::where('order_id', $orderId)->firstOrFail();
+        $status = $transaction->status;
+
+        return response()->json(['status' => $status]);
     }
 
     public function notificationCallback(Request $request)

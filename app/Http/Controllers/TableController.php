@@ -18,10 +18,14 @@ class TableController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'url' => 'required',
+            'url' => 'nullable',
         ]);
 
-        $validated['status'] = 'Kosong';
+        if (empty($validated['url'])) {
+            $validated['url'] = uniqid();
+        }
+
+        $validated['table_status_id'] = 1;
 
         $table = Table::create($validated);
 
@@ -41,8 +45,8 @@ class TableController extends Controller
     public function update(Request $request, Table $table)
     {
         $validated = $request->validate([
-            'url' => 'required',
-            'status' => 'required'
+            'url' => 'nullable',
+            'status' => 'nullable'
         ]);
 
         $table->update($validated);

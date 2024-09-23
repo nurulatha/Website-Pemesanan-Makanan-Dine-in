@@ -19,21 +19,21 @@ class MenuFactory extends Factory
         $categoryId = mt_rand(1, 7);
 
         if ($categoryId == 1) {
-            $image = '/storage/images/sushi.jpg';
+            $image = 'images/sushi.jpg';
         } elseif ($categoryId == 2) {
-            $image = '/storage/images/sashimi.jpg';
+            $image = 'images/sashimi.jpg';
         } elseif ($categoryId == 3) {
-            $image = '/storage/images/ramen.jpg';
+            $image = 'images/ramen.jpg';
         } elseif ($categoryId == 4) {
-            $image = '/storage/images/donburi.jpg';
+            $image = 'images/donburi.jpg';
         } elseif ($categoryId == 5) {
-            $image = '/storage/images/yakitori.jpg';
+            $image = 'images/yakitori.jpg';
         } elseif ($categoryId == 6) {
-            $image = '/storage/images/udon.jpg';
+            $image = 'images/udon.jpg';
         } elseif ($categoryId == 7) {
-            $image = '/storage/images/drinks.jpg';
+            $image = 'images/drinks.jpg';
         } else {
-            $image = '/storage/images/noimage';
+            $image = 'images/noimage';
         }
 
         return [

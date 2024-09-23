@@ -36,7 +36,7 @@ class MenuController extends Controller
             $fileImage = $request->file('image');
             $fileName = $validate['category_id'] . '_' . Str::uuid() . '.' . $fileImage->extension();
 
-            $validate['image'] = Storage::putFileAs('images', $fileImage, '/storage/images' . $fileName);
+            $validate['image'] = Storage::putFileAs('images', $fileImage, $fileName);
         }
 
         $menu = Menu::create($validate);

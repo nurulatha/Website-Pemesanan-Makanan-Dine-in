@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\TableController;
+use App\Http\Controllers\TableStatusController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +37,9 @@ Route::middleware('auth:sanctum')->group(function () {
 // Tables
 Route::get('/tables', [TableController::class, 'index']);
 
+// TableStatuses
+Route::get('/table-statuses', [TableStatusController::class, 'index']);
+
 // Menus
 Route::get('/menus', [MenuController::class, 'index']);
 
@@ -59,5 +63,7 @@ Route::middleware('guest')->group(function () {
 
     // Transaction
     Route::post('/transactions', [TransactionController::class, 'store']);
+    Route::get('/transactions/{id}', [TransactionController::class, 'show']);
+    Route::get('/transactions/status/{id:order_id}', [TransactionController::class, 'paidStatus']);
     Route::post('/notification', [TransactionController::class, 'notificationCallback']);
 });

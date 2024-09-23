@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        $roles = ['Admin', 'Waiter', 'Cashier', 'Manager'];
+        $roles = ['admin', 'waiter', 'cashier', 'manager'];
 
         foreach ($roles as $index => $roleName) {
             $role = Role::create([
