@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TableController;
 use App\Http\Controllers\TableStatusController;
 use App\Http\Controllers\TransactionController;
@@ -17,22 +18,29 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::middleware('is_admin')->group(function () {
 
-        // Tables
+        // Admin Tables
         Route::post('/tables', [TableController::class, 'store']);
         Route::put('/tables/{table}', [TableController::class, 'update']);
         Route::delete('/tables/{table}', [TableController::class, 'destroy']);
 
-        // Menus
+        // Admin Menus
         Route::post('/menus', [MenuController::class, 'store']);
         Route::put('/menus/{menu}', [MenuController::class, 'update']);
         Route::delete('/menus/{menu}', [MenuController::class, 'destroy']);
 
-        // Categories
+        // Admin Categories
         Route::post('/categories', [CategoryController::class, 'store']);
         Route::put('/categories/{category}', [CategoryController::class, 'update']);
         Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
+
+        // Admin Reports
+        Route::get('/reports', [ReportController::class, 'index']);
+        Route::get('/reports/tables', [ReportController::class, 'tableReports']);
+        Route::get('/reports/menus', [ReportController::class, 'menuReports']);
     });
 });
+
+Route::get('/reports/orders', [ReportController::class, 'orderReports']);
 
 // Tables
 Route::get('/tables', [TableController::class, 'index']);
@@ -48,20 +56,20 @@ Route::get('/categories', [CategoryController::class, 'index']);
 
 Route::middleware('guest')->group(function () {
 
-    // Login
+    // Guest Login
     Route::post('/login', [AuthController::class, 'login']);
 
-    // Tables
+    // Guest Tables
     Route::get('/tables/{table:url}', [TableController::class, 'show']);
 
-    // Orders
+    // Guest Orders
     Route::get('/orders', [OrderController::class, 'index']);
     Route::post('/orders', [OrderController::class, 'store']);
     Route::get('/orders/{order}', [OrderController::class, 'show']);
     Route::put('/orders/{order}', [OrderController::class, 'update']);
     Route::delete('/orders/{order}', [OrderController::class, 'destroy']);
 
-    // Transaction
+    // Guest Transaction
     Route::post('/transactions', [TransactionController::class, 'store']);
     Route::get('/transactions/{id}', [TransactionController::class, 'show']);
     Route::get('/transactions/status/{id:order_id}', [TransactionController::class, 'paidStatus']);

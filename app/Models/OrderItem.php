@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use \Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Carbon\Carbon;
 
 class OrderItem extends Model
 {
@@ -12,23 +12,35 @@ class OrderItem extends Model
 
     protected $guarded = ['id'];
 
-    /**
-     * Get the order that owns the OrderItem
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function order(): BelongsTo
+    public function order()
     {
         return $this->belongsTo(Order::class, 'order_id', 'id');
     }
 
-    /**
-     * Get the menu that owns the OrderItem
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function menu(): BelongsTo
+    public function menu()
     {
         return $this->belongsTo(Menu::class, 'menu_id', 'id');
+    }
+
+    public static function orderItemReports($startDate = null, $endDate = null)
+    {
+        $orderItems = OrderItem::with(['order.transaction', 'menu.category'])
+            ->whereHas('order', function ($orderQuery) use ($startDate, $endDate) {
+                $orderQuery->whereHas('transaction', function ($transactionQuery) use ($startDate, $endDate) {
+                    $transactionQuery->where('status', 'PAID');
+
+                    if ($startDate) {
+                        $startDate = Carbon::parse($startDate, 'Asia/Jakarta')->startOfDay();
+                        $transactionQuery->where('transactions.created_at', '>=', $startDate);
+                    }
+
+                    if ($endDate) {
+                        $endDate = Carbon::parse($endDate, 'Asia/Jakarta')->endOfDay();
+                        $transactionQuery->where('transactions.created_at', '<=', $endDate);
+                    }
+                });
+            })
+            ->get();
+        return $orderItems;
     }
 }

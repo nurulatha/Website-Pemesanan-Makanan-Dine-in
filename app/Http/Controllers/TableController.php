@@ -46,7 +46,7 @@ class TableController extends Controller
     {
         $validated = $request->validate([
             'url' => 'nullable',
-            'status' => 'nullable'
+            'table_status_id' => 'nullable'
         ]);
 
         $table->update($validated);
