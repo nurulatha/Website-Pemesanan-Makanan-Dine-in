@@ -1,0 +1,32 @@
+/* datatable-custom.css */
+.dt-layout-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    margin-top: 10px;
+  }
+  .dt-layout-row.dt-layout-table {
+    display: block; /* Atau properti lain sesuai kebutuhan */
+  }
+  
+  #salesTable_wrapper .dt-length select {
+    width: 70px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  #salesTable_wrapper .dt-search input[type="search"] {
+    width: 200px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  #salesTable_wrapper .dt-search label,
+  #salesTable_wrapper .dt-length label {
+    font-weight: bold;
+    margin-right: 10px;
+  }
+  
