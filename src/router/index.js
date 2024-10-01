@@ -1,6 +1,5 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import HomeView from "../views/user/HomeView.vue";
-import LatihanCSS from "@/views/Latihan.vue";
 
 const routes = [
   {
@@ -9,11 +8,7 @@ const routes = [
     component: HomeView,
   },
   
-  {
-    path: "/latihan",
-    name: "latihan",
-    component: LatihanCSS
-  },
+  
   
 ];
 
