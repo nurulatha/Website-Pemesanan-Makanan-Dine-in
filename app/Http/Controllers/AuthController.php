@@ -17,21 +17,32 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
 
-        $user = User::where('username', $request->username)->first();
-        $role = $user->roles->first()->name;
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages([
-                'username' => ['The provided credentials are incorrect']
-            ]);
+        if (!Auth::attempt($request->only('username', 'password'))) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Username or Password does not match',
+            ], 401);
         }
 
-        return $user->createToken($role)->plainTextToken;
+        $user = User::where('username', $request->username)->first();
+
+        // $user->tokens()->delete();
+        $token = $user->createToken('Login Token')->plainTextToken;
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Login Successfully',
+            'token' => $token,
+        ], 200);
     }
 
     public function logout(Request $request)
     {
-        return $request->user()->currentAccessToken()->delete();
+        $request->user()->tokens()->delete();
+
+        return response()->json([
+            'message' => 'Logout successfully'
+        ]);
     }
 
     public function me()

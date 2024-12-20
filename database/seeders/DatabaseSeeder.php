@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Category;
+use App\Models\Config;
 use App\Models\Menu;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -10,15 +11,11 @@ use App\Models\Role;
 use App\Models\TableStatus;
 use App\Models\Table;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
@@ -45,14 +42,14 @@ class DatabaseSeeder extends Seeder
             $roleIds[] = $role->id;
         }
 
-        $names = ['Admin', 'Waiter', 'Cashier', 'Manager'];
-        $userPass = ['admin', 'waiter', 'cashier', 'manager'];
+        $names = ['admin', 'waiter', 'cashier', 'manager'];
+        // $userPass = ['admin', 'waiter', 'cashier', 'manager'];
 
         foreach ($names as $index => $name) {
             $user = User::create([
                 'name' => $name,
-                'username' => $userPass[$index],
-                'password' => $userPass[$index]
+                'username' => $name,
+                'password' => 'password'
             ]);
 
             DB::table('role_users')->insert([
@@ -86,5 +83,14 @@ class DatabaseSeeder extends Seeder
                 'table_status_id' => 1
             ]);
         }
+
+        Config::create([
+            'name' => 'xendit',
+            'value' => [
+                "XENDIT_API_KEY" => "xnd_development_rcEG4al3Tdsah0dMdqscSGDZGqIz4jSYVN8UJhmrLnfrYKcSHYFexzyCvs2i",
+                "XENDIT_CALLBACK_TOKEN" => "ERqqHEhg5KPl5wcSBZbcR856ZAEeHhZ3bXNIJLat3wRnPEfK",
+                "REDIRECT_URL" => "http://192.168.0.50:8081/",
+            ]
+        ]);
     }
 }

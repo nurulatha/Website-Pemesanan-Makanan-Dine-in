@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Order extends Model
 {
@@ -25,4 +26,29 @@ class Order extends Model
     {
         return $this->hasOne(Transaction::class, 'order_id', 'id');
     }
+
+    // public static function orderPaidReports($startDate = null, $endDate = null, $filterPaid = false)
+    // {
+    //     $orders = Order::with('transaction')
+    //         ->whereHas('transaction', function ($transactionQuery) use ($startDate, $endDate, $filterPaid) {
+
+    //             if ($filterPaid) {
+    //                 $transactionQuery->where('transactions.status', '=', 'PAID');
+    //             } elseif ($filterPaid == false) {
+    //                 $transactionQuery->where('transactions.status', '!=', 'PAID');
+    //             }
+
+    //             if ($startDate) {
+    //                 $startDate = Carbon::parse($startDate, 'Asia/Jakarta')->startOfDay();
+    //                 $transactionQuery->where('transactions.created_at', '>=', $startDate);
+    //             }
+
+    //             if ($endDate) {
+    //                 $endDate = Carbon::parse($endDate, 'Asia/Jakarta')->endOfDay();
+    //                 $transactionQuery->where('transactions.created_at', '<=', $endDate);
+    //             }
+    //         })
+    //         ->get();
+    //     return $orders;
+    // }
 }

@@ -17,6 +17,7 @@ class ReportResource extends JsonResource
         return [
             'order_item_id' => $this->id,
             'customer_name' => $this->order->customer_name,
+            'customer_phone' => $this->order->customer_phone,
             'table_id' => $this->order->table_id,
             'menu' => $this->menu->name,
             'category' => $this->menu->category->name,

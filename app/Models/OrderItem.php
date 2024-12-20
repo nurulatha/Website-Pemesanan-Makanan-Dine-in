@@ -22,25 +22,25 @@ class OrderItem extends Model
         return $this->belongsTo(Menu::class, 'menu_id', 'id');
     }
 
-    public static function orderItemReports($startDate = null, $endDate = null)
-    {
-        $orderItems = OrderItem::with(['order.transaction', 'menu.category'])
-            ->whereHas('order', function ($orderQuery) use ($startDate, $endDate) {
-                $orderQuery->whereHas('transaction', function ($transactionQuery) use ($startDate, $endDate) {
-                    $transactionQuery->where('status', 'PAID');
+    // public static function orderItemReports($startDate = null, $endDate = null)
+    // {
+    //     $orderItems = OrderItem::with(['order.transaction', 'menu.category'])
+    //         ->whereHas('order', function ($orderQuery) use ($startDate, $endDate) {
+    //             $orderQuery->whereHas('transaction', function ($transactionQuery) use ($startDate, $endDate) {
+    //                 $transactionQuery->where('status', 'PAID');
 
-                    if ($startDate) {
-                        $startDate = Carbon::parse($startDate, 'Asia/Jakarta')->startOfDay();
-                        $transactionQuery->where('transactions.created_at', '>=', $startDate);
-                    }
+    //                 if ($startDate) {
+    //                     $startDate = Carbon::parse($startDate, 'Asia/Jakarta')->startOfDay();
+    //                     $transactionQuery->where('transactions.created_at', '>=', $startDate);
+    //                 }
 
-                    if ($endDate) {
-                        $endDate = Carbon::parse($endDate, 'Asia/Jakarta')->endOfDay();
-                        $transactionQuery->where('transactions.created_at', '<=', $endDate);
-                    }
-                });
-            })
-            ->get();
-        return $orderItems;
-    }
+    //                 if ($endDate) {
+    //                     $endDate = Carbon::parse($endDate, 'Asia/Jakarta')->endOfDay();
+    //                     $transactionQuery->where('transactions.created_at', '<=', $endDate);
+    //                 }
+    //             });
+    //         })
+    //         ->get();
+    //     return $orderItems;
+    // }
 }

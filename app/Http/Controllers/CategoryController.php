@@ -6,6 +6,7 @@ use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
@@ -20,35 +21,96 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
-        $validate = $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required|max:255'
         ]);
 
-        $category = Category::create($validate);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
 
-        return new CategoryResource($category);
-    }
+        try {
 
-    public function show(Category $category)
-    {
-        //
+            $category = Category::create([
+                'name' => $request->name
+            ]);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Category created successfully',
+                'data' => new CategoryResource($category),
+            ], 201);
+        } catch (\Throwable $th) {
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+            ], 500);
+        }
     }
 
     function update(Request $request, Category $category)
     {
-        $validate = $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required|max:255'
         ]);
 
-        $category->update($validate);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
 
-        return new CategoryResource($category);
+        try {
+
+            $category->update([
+                'name' => $request->name
+            ]);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Category updated successfully',
+                'data' => new CategoryResource($category),
+            ], 200);
+        } catch (\Throwable $th) {
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+            ], 500);
+        }
     }
 
     public function destroy(Category $category)
     {
-        $category->delete();
+        if (!$category->exists) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Category not found',
+            ], 404);
+        }
 
-        return new CategoryResource($category);
+        try {
+
+            $category->delete();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Category deleted successfully',
+                'data' => new CategoryResource($category),
+            ], 200);
+        } catch (\Throwable $th) {
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong',
+            ], 500);
+        }
     }
 }
