@@ -9,10 +9,10 @@ use Illuminate\Support\Facades\Validator;
 
 class TableController extends Controller
 {
-
     public function index()
     {
         $tables = Table::all();
+
         return response()->json(['data' => $tables]);
     }
 
@@ -53,7 +53,7 @@ class TableController extends Controller
 
     public function show(Table $table)
     {
-        if (!$table->exists) {
+        if (! $table->exists) {
             return response()->json([
                 'status' => false,
                 'message' => 'Table not found',
@@ -63,12 +63,11 @@ class TableController extends Controller
         return response()->json($table);
     }
 
-
     public function update(Request $request, Table $table)
     {
         $validator = Validator::make($request->all(), [
-            'url' => 'nullable|unique:tables,url,' . $table->id,
-            'table_status_id' => 'nullable|exists:table_statuses,id'
+            'url' => 'nullable|unique:tables,url,'.$table->id,
+            'table_status_id' => 'nullable|exists:table_statuses,id',
         ]);
 
         if ($validator->fails()) {
@@ -83,7 +82,7 @@ class TableController extends Controller
 
             $table->update($request->only([
                 'url',
-                'table_status_id'
+                'table_status_id',
             ]));
 
             return response()->json([
@@ -95,15 +94,15 @@ class TableController extends Controller
 
             return response()->json([
                 'status' => false,
-                'message' => 'Something went wrong'
+                'message' => 'Something went wrong',
             ], 500);
         }
     }
 
-    public function updateStatus(Request $request, Table $table) 
+    public function updateStatus(Request $request, Table $table)
     {
         $validator = Validator::make($request->all(), [
-            'table_status_id' => 'required|exists:table_statuses,id'
+            'table_status_id' => 'required|exists:table_statuses,id',
         ]);
 
         if ($validator->fails()) {
@@ -117,7 +116,7 @@ class TableController extends Controller
         try {
 
             $table->update([
-                'table_status_id' => $request->table_status_id
+                'table_status_id' => $request->table_status_id,
             ]);
 
             return response()->json([
@@ -136,7 +135,7 @@ class TableController extends Controller
 
     public function destroy(Table $table)
     {
-        if (!$table->exists) {
+        if (! $table->exists) {
             return response()->json([
                 'status' => false,
                 'message' => 'Table not found',

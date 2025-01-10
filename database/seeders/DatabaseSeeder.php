@@ -8,8 +8,8 @@ use App\Models\Menu;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Role;
-use App\Models\TableStatus;
 use App\Models\Table;
+use App\Models\TableStatus;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -36,7 +36,7 @@ class DatabaseSeeder extends Seeder
 
         foreach ($roles as $index => $roleName) {
             $role = Role::create([
-                'name' => $roleName
+                'name' => $roleName,
             ]);
 
             $roleIds[] = $role->id;
@@ -49,12 +49,12 @@ class DatabaseSeeder extends Seeder
             $user = User::create([
                 'name' => $name,
                 'username' => $name,
-                'password' => 'password'
+                'password' => 'password',
             ]);
 
             DB::table('role_users')->insert([
                 'role_id' => $roleIds[$index],
-                'user_id' => $user->id
+                'user_id' => $user->id,
             ]);
         }
 
@@ -62,7 +62,7 @@ class DatabaseSeeder extends Seeder
 
         foreach ($categories as $category) {
             Category::create([
-                'name' => $category
+                'name' => $category,
             ]);
         }
 
@@ -76,21 +76,20 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-
         for ($i = 0; $i < 3; $i++) {
             Table::create([
                 'url' => uniqid(),
-                'table_status_id' => 1
+                'table_status_id' => 1,
             ]);
         }
 
         Config::create([
             'name' => 'xendit',
             'value' => [
-                "XENDIT_API_KEY" => "xnd_development_rcEG4al3Tdsah0dMdqscSGDZGqIz4jSYVN8UJhmrLnfrYKcSHYFexzyCvs2i",
-                "XENDIT_CALLBACK_TOKEN" => "ERqqHEhg5KPl5wcSBZbcR856ZAEeHhZ3bXNIJLat3wRnPEfK",
-                "REDIRECT_URL" => "http://192.168.0.50:8081/",
-            ]
+                'XENDIT_API_KEY' => 'xnd_development_rcEG4al3Tdsah0dMdqscSGDZGqIz4jSYVN8UJhmrLnfrYKcSHYFexzyCvs2i',
+                'XENDIT_CALLBACK_TOKEN' => 'ERqqHEhg5KPl5wcSBZbcR856ZAEeHhZ3bXNIJLat3wRnPEfK',
+                'REDIRECT_URL' => 'http://192.168.0.50:8081/',
+            ],
         ]);
     }
 }

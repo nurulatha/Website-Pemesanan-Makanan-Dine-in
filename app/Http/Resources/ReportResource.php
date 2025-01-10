@@ -23,7 +23,7 @@ class ReportResource extends JsonResource
             'category' => $this->menu->category->name,
             'price' => $this->menu->price,
             'quantity' => $this->quantity,
-            'total_price' => $this->total_price
+            'total_price' => $this->total_price,
         ];
     }
 }

@@ -11,8 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Xendit\Configuration;
-use Xendit\Invoice\InvoiceApi;
 use Xendit\Invoice\CreateInvoiceRequest;
+use Xendit\Invoice\InvoiceApi;
 
 class TransactionController extends Controller
 {
@@ -27,7 +27,7 @@ class TransactionController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'order_id' => 'required|exists:orders,id'
+            'order_id' => 'required|exists:orders,id',
         ]);
 
         if ($validator->fails()) {
@@ -52,39 +52,39 @@ class TransactionController extends Controller
         $orderItemsPrices = $orderItems->pluck('menu.price');
         $orderItemsQuantities = $orderItems->pluck('quantity');
 
-        $message = "Terima kasih anda telah melakukan pemesanan di restoran kami. Berikut adalah rincian pesanan Anda:";
+        $message = 'Terima kasih anda telah melakukan pemesanan di restoran kami. Berikut adalah rincian pesanan Anda:';
         foreach ($orderItemsNames as $index => $orderItemName) {
-            $message .= "\n - " . $orderItemName .
-                " (IDR " . number_format($orderItemsPrices[$index], 0, ',', '.') .
-                ") x " . $orderItemsQuantities[$index];
+            $message .= "\n - ".$orderItemName.
+                ' (IDR '.number_format($orderItemsPrices[$index], 0, ',', '.').
+                ') x '.$orderItemsQuantities[$index];
         }
 
         $tableUrl = Table::findOrFail($order->table_id)->url;
 
         $uuid = (string) Str::uuid();
 
-        $apiInstance = new InvoiceApi();
+        $apiInstance = new InvoiceApi;
         $createInvoiceRequest = new CreateInvoiceRequest([
             'external_id' => $uuid,
             'amount' => $amount,
             'description' => $message,
-            "customer" => [
-                "given_names" => $order->customer_name,
-                "mobile_number" => $order->customer_phone,
+            'customer' => [
+                'given_names' => $order->customer_name,
+                'mobile_number' => $order->customer_phone,
             ],
-            "customer_notification_preference" => [
-                "invoice_created" => [
-                    "whatsapp",
+            'customer_notification_preference' => [
+                'invoice_created' => [
+                    'whatsapp',
                 ],
-                "invoice_reminder" => [
-                    "whatsapp",
+                'invoice_reminder' => [
+                    'whatsapp',
                 ],
-                "invoice_paid" => [
-                    "whatsapp",
-                ]
+                'invoice_paid' => [
+                    'whatsapp',
+                ],
             ],
-            "success_redirect_url" => $this->xenditConfig->value['REDIRECT_URL'] . 'orders/' . $tableUrl,
-            "failure_redirect_url" => $this->xenditConfig->value['REDIRECT_URL'] . 'orders/' . $tableUrl,
+            'success_redirect_url' => $this->xenditConfig->value['REDIRECT_URL'].'orders/'.$tableUrl,
+            'failure_redirect_url' => $this->xenditConfig->value['REDIRECT_URL'].'orders/'.$tableUrl,
             'currency' => 'IDR',
         ]);
 
@@ -96,20 +96,20 @@ class TransactionController extends Controller
                     'order_id' => $order->id,
                     'status' => $result['status'],
                     'checkout_url' => $result['invoice_url'],
-                    'external_id' => $uuid
+                    'external_id' => $uuid,
                 ]
             );
 
             return response()->json([
                 'status' => true,
                 'message' => 'Transaction created successfully',
-                'data' => $result['invoice_url']
+                'data' => $result['invoice_url'],
             ], 201);
         } catch (\Xendit\XenditSdkException $e) {
 
             return response()->json([
                 'status' => false,
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 500);
         }
     }
@@ -117,7 +117,7 @@ class TransactionController extends Controller
     public function storeOffline(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'order_id' => 'required|exists:orders,id'
+            'order_id' => 'required|exists:orders,id',
         ]);
 
         if ($validator->fails()) {
@@ -142,13 +142,13 @@ class TransactionController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'Transaction created successfully',
-                'data' => $transaction
+                'data' => $transaction,
             ], 201);
         } catch (\Throwable $th) {
 
             return response()->json([
                 'status' => false,
-                'message' => 'Something went wrong'
+                'message' => 'Something went wrong',
             ], 500);
         }
     }
@@ -156,6 +156,7 @@ class TransactionController extends Controller
     public function show($id)
     {
         $transaction = Transaction::findOrFail($id);
+
         return response()->json(['data' => $transaction]);
     }
 
@@ -167,7 +168,7 @@ class TransactionController extends Controller
 
         return response()->json([
             'status' => $status,
-            'payment_method' => $payment_method
+            'payment_method' => $payment_method,
         ]);
     }
 
@@ -184,13 +185,13 @@ class TransactionController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'Offline payment confirmed',
-                'data' => $transaction
+                'data' => $transaction,
             ], 200);
         } catch (\Throwable $th) {
 
             return response()->json([
                 'status' => false,
-                'message' => 'Something went wrong'
+                'message' => 'Something went wrong',
             ], 500);
         }
     }
@@ -202,7 +203,7 @@ class TransactionController extends Controller
         if ($request->header('x-callback-token') !== $callbackToken) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Invalid callback token'
+                'message' => 'Invalid callback token',
             ], 400);
         }
 
@@ -218,17 +219,17 @@ class TransactionController extends Controller
 
             $transaction->update([
                 'status' => $request->status,
-                'payment_method' => $request->payment_method
+                'payment_method' => $request->payment_method,
             ]);
 
             return response()->json([
-                'message' => 'Success'
+                'message' => 'Success',
             ], 200);
         } catch (\Xendit\XenditSdkException $e) {
 
             return response()->json([
                 'status' => false,
-                'message' => 'Something went wrong'
+                'message' => 'Something went wrong',
             ], 500);
         }
     }

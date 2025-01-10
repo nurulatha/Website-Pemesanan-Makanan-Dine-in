@@ -12,7 +12,6 @@ use Illuminate\Support\Str;
 
 class MenuController extends Controller
 {
-
     public function index()
     {
         $menus = Menu::all();
@@ -31,7 +30,7 @@ class MenuController extends Controller
             'name' => 'required|max:255',
             'description' => 'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'price' => 'required|numeric|min:0'
+            'price' => 'required|numeric|min:0',
         ]);
 
         if ($validator->fails()) {
@@ -47,7 +46,7 @@ class MenuController extends Controller
             if ($request->hasFile('image')) {
 
                 $fileImage = $request->file('image');
-                $fileName = $request->category_id . '_' . (string) Str::uuid() . '.' . $fileImage->extension();
+                $fileName = $request->category_id.'_'.(string) Str::uuid().'.'.$fileImage->extension();
 
                 $image = Storage::putFileAs('images', $fileImage, $fileName);
             }
@@ -57,7 +56,7 @@ class MenuController extends Controller
                 'name' => $request->name,
                 'description' => $request->description,
                 'image' => $image ?? 'images/noimage.jpg',
-                'price' => $request->price
+                'price' => $request->price,
             ]);
 
             return response()->json([
@@ -81,7 +80,7 @@ class MenuController extends Controller
             'name' => 'required|max:255',
             'description' => 'required',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'price' => 'required|numeric|min:0'
+            'price' => 'required|numeric|min:0',
         ]);
 
         if ($validator->fails()) {
@@ -101,7 +100,7 @@ class MenuController extends Controller
                 }
 
                 $fileImage = $request->file('image');
-                $fileName = $request->category_id . '_' . (string) Str::uuid() . '.' . $fileImage->extension();
+                $fileName = $request->category_id.'_'.(string) Str::uuid().'.'.$fileImage->extension();
 
                 $image = Storage::putFileAs('images', $fileImage, $fileName);
             } else {
@@ -110,10 +109,10 @@ class MenuController extends Controller
 
                     $oldFileName = $menu->image;
                     $fileExtension = pathinfo($oldFileName, PATHINFO_EXTENSION);
-                    $newFileName = $request->category_id . '_' . (string) Str::uuid() . '.' . $fileExtension;
+                    $newFileName = $request->category_id.'_'.(string) Str::uuid().'.'.$fileExtension;
 
-                    if (Storage::move($oldFileName, 'images/' . $newFileName)) {
-                        $image = 'images/' . $newFileName;
+                    if (Storage::move($oldFileName, 'images/'.$newFileName)) {
+                        $image = 'images/'.$newFileName;
                     } else {
                         $image = $oldFileName;
                     }
@@ -125,7 +124,7 @@ class MenuController extends Controller
                 'name' => $request->name,
                 'description' => $request->description,
                 'image' => $image ?? $menu->image,
-                'price' => $request->price
+                'price' => $request->price,
             ]);
 
             return response()->json([
@@ -144,7 +143,7 @@ class MenuController extends Controller
 
     public function destroy(Menu $menu)
     {
-        if (!$menu->exists) {
+        if (! $menu->exists) {
             return response()->json([
                 'status' => false,
                 'message' => 'Menu not found',
@@ -162,7 +161,7 @@ class MenuController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'Menu deleted successfully',
-                'data' =>  new MenuResource($menu->loadMissing('category:id,name')),
+                'data' => new MenuResource($menu->loadMissing('category:id,name')),
             ], 200);
         } catch (\Throwable $th) {
 

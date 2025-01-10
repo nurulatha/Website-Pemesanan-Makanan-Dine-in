@@ -9,6 +9,7 @@ use Maatwebsite\Excel\Concerns\FromView;
 class MenusExport implements FromView
 {
     protected $reports;
+
     protected $date;
 
     public function __construct($reports, $date)

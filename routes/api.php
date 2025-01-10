@@ -56,7 +56,7 @@ Route::middleware('auth:sanctum')->group(function () {
         // Route::get('/reports/order-paid', [ReportController::class, 'orderPaidReports']);
         Route::get('/reports/tables', [ReportController::class, 'tableReports']);
         Route::get('/reports/menus', [ReportController::class, 'menuReports']);
-        // Export
+        // // Export
         Route::get('/reports/menus/excel', [ReportController::class, 'menuReportsExcel']);
         Route::get('/reports/menus/pdf', [ReportController::class, 'menuReportsPdf']);
         Route::get('/reports/tables/excel', [ReportController::class, 'tableReportsExcel']);

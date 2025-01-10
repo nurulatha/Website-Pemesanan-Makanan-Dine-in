@@ -18,9 +18,10 @@ class AdminMiddleware
     {
         $user = Auth::user();
         $isAdmin = $user->roles->contains('id', 1);
-        if (!$isAdmin) {
+        if (! $isAdmin) {
             return response()->json(['message' => 'data not found'], 404);
         }
+
         return $next($request);
     }
 }

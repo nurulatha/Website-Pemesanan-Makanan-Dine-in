@@ -12,10 +12,10 @@ use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
-
     public function index()
     {
         $orders = Order::with(['orderItems.menu'])->get();
+
         return OrderResource::collection($orders);
     }
 
@@ -27,7 +27,7 @@ class OrderController extends Controller
             'customer_phone' => 'required|max:15',
             'menu_items' => 'required|array',
             'menu_items.*.menu_id' => 'required|exists:menus,id',
-            'menu_items.*.quantity' => 'required|integer|min:1'
+            'menu_items.*.quantity' => 'required|integer|min:1',
         ]);
 
         if ($validator->fails()) {
@@ -56,20 +56,19 @@ class OrderController extends Controller
                     'order_id' => $order->id,
                     'menu_id' => $item['menu_id'],
                     'quantity' => $item['quantity'],
-                    'total_price' => $totalPrice
+                    'total_price' => $totalPrice,
                 ]);
             }
 
             Table::where('id', $order->table_id)
                 ->update([
-                    'table_status_id' => 3
+                    'table_status_id' => 3,
                 ]);
-
 
             return response()->json([
                 'status' => true,
                 'message' => 'Order created successfully',
-                'data' =>  new OrderResource($order->loadMissing('orderItems')),
+                'data' => new OrderResource($order->loadMissing('orderItems')),
             ], 201);
         } catch (\Throwable $th) {
 
@@ -83,16 +82,16 @@ class OrderController extends Controller
     public function show(Order $order)
     {
         $order->loadMissing('orderItems.menu');
+
         return new OrderResource($order);
     }
-
 
     public function update(Request $request, Order $order)
     {
         $validator = Validator::make($request->all(), [
             'menu_items' => 'required|array',
             'menu_items.*.menu_id' => 'required|exists:menus,id',
-            'menu_items.*.quantity' => 'required|integer|min:1'
+            'menu_items.*.quantity' => 'required|integer|min:1',
         ]);
 
         if ($validator->fails()) {
@@ -119,12 +118,12 @@ class OrderController extends Controller
                 OrderItem::updateOrCreate(
                     [
                         'order_id' => $order->id,
-                        'menu_id' => $item['menu_id']
+                        'menu_id' => $item['menu_id'],
 
                     ],
                     [
                         'quantity' => $item['quantity'],
-                        'total_price' => $totalPrice
+                        'total_price' => $totalPrice,
                     ]
                 );
             }
@@ -132,7 +131,7 @@ class OrderController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'Order updated successfully',
-                'data' =>  new OrderResource($order->loadMissing('orderItems.menu')),
+                'data' => new OrderResource($order->loadMissing('orderItems.menu')),
             ], 200);
         } catch (\Throwable $th) {
 
@@ -145,7 +144,7 @@ class OrderController extends Controller
 
     public function destroy(Order $order)
     {
-        if (!$order->exists) {
+        if (! $order->exists) {
             return response()->json([
                 'status' => false,
                 'message' => 'Order not found',

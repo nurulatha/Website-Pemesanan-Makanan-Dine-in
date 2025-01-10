@@ -13,6 +13,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all();
+
         return response()->json(['data' => $users]);
     }
 
@@ -39,7 +40,7 @@ class UserController extends Controller
             $user = User::create([
                 'name' => $request->name,
                 'username' => $request->username,
-                'password' => $request->password
+                'password' => $request->password,
             ]);
 
             $role_ids = is_array($request->role_ids) ? $request->role_ids : [$request->role_ids];
@@ -48,7 +49,7 @@ class UserController extends Controller
             foreach ($role_ids as $role_id) {
                 $roleUsers[] = [
                     'role_id' => $role_id,
-                    'user_id' => $user->id
+                    'user_id' => $user->id,
                 ];
             }
 
@@ -70,7 +71,7 @@ class UserController extends Controller
 
     public function show(User $user)
     {
-        if (!$user->exists) {
+        if (! $user->exists) {
             return response()->json([
                 'status' => false,
                 'message' => 'User not found',
@@ -84,7 +85,7 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|required',
-            'username' => 'sometimes|required|unique:users,username,' . $user->username,
+            'username' => 'sometimes|required|unique:users,username,'.$user->username,
             'current_password' => 'sometimes|required',
             'new_password' => 'sometimes|required',
             'role_ids' => 'sometimes|required',
@@ -102,17 +103,17 @@ class UserController extends Controller
         try {
 
             if ($request->has('new_password')) {
-                if (!$request->has('current_password')) {
+                if (! $request->has('current_password')) {
                     return response()->json([
                         'status' => false,
-                        'message' => 'Current password is required to change the password.'
+                        'message' => 'Current password is required to change the password.',
                     ], 422);
                 }
 
-                if (!Hash::check($request->current_password, $user->password)) {
+                if (! Hash::check($request->current_password, $user->password)) {
                     return response()->json([
                         'status' => false,
-                        'message' => 'Current password is incorrect.'
+                        'message' => 'Current password is incorrect.',
                     ], 422);
                 }
             }
@@ -135,7 +136,7 @@ class UserController extends Controller
                 foreach ($role_ids as $role_id) {
                     $roleUsers[] = [
                         'role_id' => $role_id,
-                        'user_id' => $user->id
+                        'user_id' => $user->id,
                     ];
                 }
 
@@ -158,7 +159,7 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        if (!$user->exists) {
+        if (! $user->exists) {
             return response()->json([
                 'status' => false,
                 'message' => 'User not found',

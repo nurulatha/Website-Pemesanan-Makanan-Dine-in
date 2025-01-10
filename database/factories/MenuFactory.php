@@ -41,7 +41,7 @@ class MenuFactory extends Factory
             'name' => $this->faker->word(),
             'description' => $this->faker->sentence(),
             'image' => $image,
-            'price' => $this->faker->numberBetween(10, 40) * 1000
+            'price' => $this->faker->numberBetween(10, 40) * 1000,
         ];
     }
 }

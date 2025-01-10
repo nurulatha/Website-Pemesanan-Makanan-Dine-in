@@ -20,20 +20,20 @@ class ConfigController extends Controller
         $validator = Validator::make($request->all(), [
             'XENDIT_API_KEY' => 'required',
             'XENDIT_CALLBACK_TOKEN' => 'required',
-            'REDIRECT_URL' => 'required'
+            'REDIRECT_URL' => 'required',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'status' => false,
                 'message' => 'Validation failed',
-                'error' => $validator->errors()
+                'error' => $validator->errors(),
             ], 422);
         }
 
         $xendit_redirect_url = $request->REDIRECT_URL;
 
-        if (!str_ends_with($xendit_redirect_url, '/')) {
+        if (! str_ends_with($xendit_redirect_url, '/')) {
             $xendit_redirect_url .= '/';
         }
 
@@ -44,9 +44,9 @@ class ConfigController extends Controller
                     'value' => [
                         'XENDIT_API_KEY' => $request->XENDIT_API_KEY,
                         'XENDIT_CALLBACK_TOKEN' => $request->XENDIT_CALLBACK_TOKEN,
-                        'REDIRECT_URL' => $xendit_redirect_url
-                    ]
-                ]
+                        'REDIRECT_URL' => $xendit_redirect_url,
+                    ],
+                ],
             ];
 
             foreach ($configs as $config) {
@@ -61,13 +61,13 @@ class ConfigController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'Config updated successfully',
-                'data' => $configs
+                'data' => $configs,
             ]);
         } catch (\Throwable $th) {
 
             return response()->json([
                 'status' => false,
-                'message' => 'Something went wrong'
+                'message' => 'Something went wrong',
             ], 500);
         }
     }

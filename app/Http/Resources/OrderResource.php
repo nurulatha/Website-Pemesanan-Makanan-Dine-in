@@ -20,7 +20,7 @@ class OrderResource extends JsonResource
                 'table_id' => $this->table_id,
                 'customer_name' => $this->customer_name,
                 'customer_phone' => $this->customer_phone,
-                'orderItems' => OrderItemResource::collection($this->whenLoaded('orderItems'))
+                'orderItems' => OrderItemResource::collection($this->whenLoaded('orderItems')),
             ];
     }
 }

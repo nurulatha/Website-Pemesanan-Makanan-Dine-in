@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
 
 class Table extends Model
 {
@@ -47,7 +47,6 @@ class Table extends Model
                 return $order->orderItems;
             })->sum('total_price');
         });
-
 
         return $tables;
     }

@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
-
     public function index()
     {
         $categories = Category::all();
@@ -22,7 +21,7 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|max:255'
+            'name' => 'required|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -36,7 +35,7 @@ class CategoryController extends Controller
         try {
 
             $category = Category::create([
-                'name' => $request->name
+                'name' => $request->name,
             ]);
 
             return response()->json([
@@ -53,10 +52,10 @@ class CategoryController extends Controller
         }
     }
 
-    function update(Request $request, Category $category)
+    public function update(Request $request, Category $category)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|max:255'
+            'name' => 'required|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -70,7 +69,7 @@ class CategoryController extends Controller
         try {
 
             $category->update([
-                'name' => $request->name
+                'name' => $request->name,
             ]);
 
             return response()->json([
@@ -89,7 +88,7 @@ class CategoryController extends Controller
 
     public function destroy(Category $category)
     {
-        if (!$category->exists) {
+        if (! $category->exists) {
             return response()->json([
                 'status' => false,
                 'message' => 'Category not found',

@@ -19,7 +19,7 @@ class RoleMiddleware
         $user = Auth::user();
         $hasRole = $user->roles->pluck('name')->intersect($roles)->isNotEmpty();
 
-        if (!$hasRole) {
+        if (! $hasRole) {
             return response()->json(['message' => 'data not found'], 404);
         }
 

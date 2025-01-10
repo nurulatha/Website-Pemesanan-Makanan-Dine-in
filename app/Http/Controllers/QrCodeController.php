@@ -11,7 +11,7 @@ class QrCodeController extends Controller
     public function generateQrCode(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'url' => 'required'
+            'url' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -27,13 +27,13 @@ class QrCodeController extends Controller
             $qrCode = QrCode::size(300)->generate($request->url);
 
             return response()->json([
-                'qr_code' => 'data:image/svg+xml;base64,' . base64_encode($qrCode)
+                'qr_code' => 'data:image/svg+xml;base64,'.base64_encode($qrCode),
             ]);
         } catch (\Throwable $th) {
 
             return response()->json([
                 'status' => false,
-                'message' => 'Something went wrong'
+                'message' => 'Something went wrong',
             ]);
         }
     }
