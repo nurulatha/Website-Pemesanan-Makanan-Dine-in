@@ -120,7 +120,9 @@ app.use(Toastify, {
 });
 
 // Setup global API URL
-app.config.globalProperties.$apiURL = "https://ccf0-45-126-187-4.ngrok-free.app";
+app.config.globalProperties.$apiURL = "https://aa6a-140-213-59-146.ngrok-free.app";
+app.config.globalProperties.$URLQR = "http://192.168.220.206:8080/orders/";
+
 
 // Setup routing
 const router = createRouter({

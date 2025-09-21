@@ -1,34 +1,34 @@
 <template>
-  <div class="container mx-auto px-4 h-full">
-    <div class="flex content-center items-center justify-center h-full">
-      <div class="w-full lg:w-4/12 px-4">
-        <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-200 border-0">
-          <div class="flex-auto px-4 lg:px-10 py-10 pt-0">
+  <div class="container h-full px-4 mx-auto">
+    <div class="flex items-center content-center justify-center h-full">
+      <div class="w-full px-4 lg:w-4/12">
+        <div class="relative flex flex-col w-full min-w-0 mb-6 break-words border-0 rounded-lg shadow-lg bg-blueGray-200">
+          <div class="flex-auto px-4 py-10 pt-0 lg:px-10">
             <form>
               <div class="relative w-full mb-3">
-                <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2 mt-6" htmlFor="grid-password"> Username </label>
+                <label class="block mt-6 mb-2 text-xs font-bold uppercase text-blueGray-600" htmlFor="grid-password"> Username </label>
                 <input
                   v-model="username"
                   type="text"
-                  class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                  class="w-full px-3 py-3 text-sm transition-all duration-150 ease-linear bg-white border-0 rounded shadow placeholder-blueGray-300 text-blueGray-600 focus:outline-none focus:ring"
                   placeholder="Username"
                 />
               </div>
 
               <div class="relative w-full mb-3">
-                <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlFor="grid-password"> Password </label>
+                <label class="block mb-2 text-xs font-bold uppercase text-blueGray-600" htmlFor="grid-password"> Password </label>
                 <input
                   v-model="password"
                   type="password"
-                  class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                  class="w-full px-3 py-3 text-sm transition-all duration-150 ease-linear bg-white border-0 rounded shadow placeholder-blueGray-300 text-blueGray-600 focus:outline-none focus:ring"
                   placeholder="Password"
                 />
               </div>
 
-              <div class="text-center mt-6">
+              <div class="mt-6 text-center">
                 <button
                   @click="login"
-                  class="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
+                  class="w-full px-6 py-3 mb-1 mr-1 text-sm font-bold text-white uppercase transition-all duration-150 ease-linear rounded shadow outline-none bg-blueGray-800 active:bg-blueGray-600 hover:shadow-lg focus:outline-none"
                   type="button"
                 >
                   Sign In
@@ -59,7 +59,7 @@ export default {
           password: this.password,
         })
         .then((response) => {
-          const token = response.data;
+          const token = response.data.token;
           localStorage.setItem("auth_token", token);
           this.$router.push("/admin/menus");
           this.$toast.success("Login Successful!");
