@@ -10,8 +10,8 @@ import "bootstrap/dist/js/bootstrap.bundle";
 import "@fortawesome/fontawesome-free/css/all.css";
 import "./assets/css/main.css";
 import "./assets/css/tailwind.css";
-import DataTable from 'datatables.net-vue3';
-import VCalendar from "v-calendar"; 
+import DataTable from "datatables.net-vue3";
+import VCalendar from "v-calendar";
 
 const app = createApp(App);
 
@@ -21,10 +21,10 @@ app.use(VCalendar, {
 
 app.use(Toastify, {
   position: "top-right",
-  autoClose: 1000,
+  autoClose: 2500,
 });
 app.use(DataTable);
 app.use(VueScreen, "bootstrap");
 app.config.globalProperties.$toast = toast;
-app.config.globalProperties.$apiURL = "https://ccf0-45-126-187-4.ngrok-free.app";
+app.config.globalProperties.$apiURL = "https://aa6a-140-213-59-146.ngrok-free.app";
 app.use(router).mount("#app");

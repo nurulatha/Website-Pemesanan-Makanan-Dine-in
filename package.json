@@ -22,7 +22,7 @@
     "vue": "^3.2.13",
     "vue-alertify": "^1.1.0",
     "vue-paystack": "^2.0.4",
-    "vue-qrcode-reader": "^5.5.7",
+    "vue-qrcode-reader": "^5.6.0",
     "vue-router": "^4.0.3",
     "vue-screen": "^2.4.0",
     "vue-toasted": "^1.1.28",

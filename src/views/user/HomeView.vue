@@ -33,8 +33,8 @@
               <i class="fa-solid fa-x"></i>
             </button>
             <div class="cart-header">
-              <h3>New Order</h3>
-              <small>{{ cart.length }} items in cart</small>
+              <br>
+              <h1>{{ cart.length }} items in cart</h1>
             </div>
 
             <div class="cart-body">
@@ -59,17 +59,20 @@
 
               <div class="cart-sum">
                 <div class="cart-address"></div>
+                <h3 class="text-table">Meja Nomor: {{ tableNumber }}</h3>
+<br>
                 <div class="price-flex">
-                  <small>Total</small>
+                  <h3>Total</h3>
                   <h4>Rp {{ cartTotal }}</h4>
                 </div>
 
                 <div class="cart-pay-btn">
-                  <input type="text" v-model="customerName" placeholder="Enter your name" class="form-control mb-2" />
-                  <button class="btn btn-success" v-if="orderId !== null" @click="payOrder(orderId)"><span class="fa-regular fa-credit-card"></span> Bayar</button>
+                  <input type="text" v-model="customerName" placeholder="Enter your name" class="mb-2 form-control" />
+                  <input type="text" v-model="customerPH" placeholder="Enter phone number" class="mb-2 form-control" />
+                  <button class="btn btn-success" v-if="orderId !== null" @click="payOrder(orderId)"><span class="fa-regular fa-credit-card"></span> Bayar secara online</button>
                   <button class="btn btn-success" v-else @click="submitOrder"><span class="fa-regular fa-credit-card"></span> Pesan</button>
                   <br />
-                  <button class="btn btn-success">*Pembayaran dilakukan diakhir</button>
+                  <button class="btn btn-secondary" v-if="orderId !== null" @click="payOffline(orderId)">Bayar langsung di kasir</button>
                 </div>
               </div>
             </div>
@@ -100,8 +103,10 @@ export default {
       cart: [],
       isCartVisible: false,
       customerName: "",
+      customerPH: "",
       tableId: null,
       orderId: null,
+      tableNumber: null,
     };
   },
   methods: {
@@ -167,6 +172,10 @@ export default {
         this.$toast.error("Please enter name");
         return;
       }
+      if (!this.customerPH.trim()) {
+        this.$toast.error("Please enter phone number");
+        return;
+      }
       const confirmation = confirm("Apakah pesanan Anda sudah sesuai?");
       if (!confirmation) {
         this.$toast.info("Pesanan dibatalkan");
@@ -175,6 +184,7 @@ export default {
       const orderData = {
         url: this.tableId,
         customer_name: this.customerName,
+        customer_phone: this.customerPH,
         menu_items: this.cart.map((item) => ({
           menu_id: item.id,
           quantity: item.quantity,
@@ -209,6 +219,27 @@ export default {
           this.$toast.error("Payment failed");
         });
     },
+    payOffline(orderId) {
+      if (!orderId) {
+        this.$toast.error("Order ID is missing. Please create an order first.");
+        return;
+      }
+
+      axios
+        .post(`${this.$apiURL}/api/transactions/offline`, { order_id: orderId })
+        .then(() => {
+          this.$toast.success("Silahkan ke kasir untuk pembayaran");
+          localStorage.removeItem(`orderId_${this.tableId}`);
+          this.orderId = null;
+          this.cart = [];
+          localStorage.removeItem(`cart_${this.tableId}`);
+        })
+        .catch((error) => {
+          console.error("Error processing offline payment:", error.response ? error.response.data : error.message);
+          this.$toast.error("Offline payment failed.");
+        });
+    },
+
     checkPaymentStatus() {
       if (this.orderId) {
         axios
@@ -244,6 +275,22 @@ export default {
         this.tableId = match[1];
       }
     },
+    fetchTableNumber() {
+      axios
+        .get(`${this.$apiURL}/api/tables`, {
+          headers: { "ngrok-skip-browser-warning": "69420" },
+        })
+        .then((response) => {
+          const tables = response.data.data;
+          const currentTable = tables.find((table) => table.url === this.tableId);
+          if (currentTable) {
+            this.tableNumber = currentTable.id; // Set nomor meja berdasarkan ID
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching table number:", error);
+        });
+    },
   },
   computed: {
     cartTotal() {
@@ -257,6 +304,7 @@ export default {
     },
   },
   mounted() {
+    this.fetchTableNumber();
     this.extractTableId();
     this.cart = JSON.parse(localStorage.getItem(`cart_${this.tableId}`)) || [];
     const storedOrderId = localStorage.getItem(`orderId_${this.tableId}`);

@@ -676,7 +676,7 @@ button {
   .cart-section {
     position: fixed;
     right: 0% !important;
-    width: 430px !important;
+    width: 380px !important;
     height: 90vh;
     overflow-y: auto;
     scroll-behavior: smooth;
